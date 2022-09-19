@@ -1,880 +1,606 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Experimenting with File-based Routing in Django</title>
 
-  <title>Bringing JSONField into Wagtail Core</title>
+    <link rel="stylesheet" href="dist/reset.css" />
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/theme/sage.css" />
 
-  <link rel="stylesheet" href="dist/reset.css">
-  <link rel="stylesheet" href="dist/reveal.css">
-  <link rel="stylesheet" href="dist/theme/sage.css">
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/night-owl.css" />
+  </head>
 
-  <!-- Theme used for syntax highlighted code -->
-  <link rel="stylesheet" href="plugin/highlight/night-owl.css">
-</head>
-
-<body>
-  <div class="reveal">
-    <div class="slides">
-      <section data-markdown>
-        <textarea data-template>
-        ## Bringing
-
-        ## **`JSONField`**
-
-        ## into Wagtail Core
-      </textarea>
-      </section>
-      <section>
-        <section data-auto-animate data-background-opacity="0.15">
-          <pre><code data-line-numbers="1-14|2|3|4|5-12|13" data-trim>
-          {
-            "name": "Sage Abdullah",
-            "pronouns": ["he", "him"],
-            "background": "Wagtail Developer, Torchbox",
-            "experiences": [
-              {
-                "title": "Google Summer of Code",
-                "year": 2019,
-                "organization": "Django Software Foundation",
-                "project": "Cross-DB JSONField"
-              }
-            ],
-            "username": "laymonage"
-          }
-        </code></pre>
-        </section>
-      </section>
-      <section>
-        <section data-auto-animate>
-          <h2 class="code">JSONField</h2>
-        </section>
-        <section data-auto-animate>
-          <h2 class="code">JSONField</h2>
-          <p>“A field for storing JSON-encoded data.”</p>
-        </section>
-        <section data-auto-animate>
-          <h2 class="code">JSONField</h2>
-          <p>“A field for storing JSON-encoded data.”</p>
-
-          <p><small>In Python, represented as:</small></p>
-
-          <ul class="compact">
-            <li class="fragment" data-fragment-index="1"><strong><code>dict</code></strong></li>
-            <li class="fragment" data-fragment-index="2"><strong><code>list</code></strong></li>
-            <li class="fragment" data-fragment-index="3"><code>str</code></li>
-            <li class="fragment" data-fragment-index="3"><code>int</code></li>
-            <li class="fragment" data-fragment-index="3"><code>float</code></li>
-            <li class="fragment" data-fragment-index="3"><code>bool</code></li>
-            <li class="fragment" data-fragment-index="3"><code>None</code></li>
-          </ul>
-        </section>
-      </section>
-      <section>
-        <section data-auto-animate>
-          <h2>JSON<span data-id="encoded" style="font-size: inherit;">-encoded</span> data</h2>
-        </section>
-        <section data-auto-animate>
-          <h2>JSON<span data-id="encoded" style="font-size: 0;">-encoded</span> data</h2>
-
-          <pre data-id="code"><code data-line-numbers="1-10|2|3|4|5|6-9|7-8" data-trim>
-            {
-              "name": "Sage",
-              "active": true,
-              "age": 22,
-              "height": 170.0,
-              "interests": [
-                {"hobbies": ["reading", "coding"]},
-                {"others": ["cats", 42]}
-              ]
-            }
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2>JSON<span data-id="encoded" style="font-size: 0;">-encoded</span> data</h2>
-
-          <pre data-id="code"><code data-line-numbers="10|1-11" data-trim>
-            {
-              "name": "Sage",
-              "active": true,
-              "age": 22,
-              "height": 170.0,
-              "interests": [
-                {"hobbies": ["reading", "coding"]},
-                {"others": ["cats", 42]}
-              ],
-              "partner": null
-            }
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2>JSON<span data-id="encoded" style="color:deepskyblue; font-size: inherit;">-encoded</span> data</h2>
-
-          <pre data-id="code"><code data-line-numbers data-trim class="python">
-            # This is in Python
-            data = '''{
-              "name": "Sage",
-              "active": true,
-              "age": 22,
-              "height": 170.0,
-              "interests": [
-                {"hobbies": ["reading", "coding"]},
-                {"others": ["cats", 42]}
-              ],
-              "partner": null
-            }'''
-          </code></pre>
-        </section>
-      </section>
-      <section>
-        <section data-auto-animate>
-          <h2>Databases</h2>
-        </section>
-        <section data-auto-animate>
-          <h2>Databases</h2>
-
-          <pre data-id="code" style="font-size: 1.3rem;"><code data-line-numbers data-trim class="python">
-              class Profile(models.Model):
-                  user = models.OneToOneField(User, on_delete=models.CASCADE)
-                  status = models.CharField(max_length=255)
-                  last_sync = models.DateTimeField(auto_now=True)
-                  config = models.JSONField()
-            </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2>Databases</h2>
-
-          <table class="code" style="font-size: 1.35rem;">
-            <thead>
-              <tr>
-                <th colspan="4">myapp_profile</th>
-              </tr>
-              <tr>
-                <th>user_id</th>
-                <th>status</th>
-                <th>last_sync</th>
-                <th>config</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>32</td>
-                <td>Happy!</td>
-                <td>2020-08-17T19:45:05.481516</td>
-                <td>
-                  <pre style="width: 100%;"><code data-trim>
-                    {
-                      "dark_mode": true,
-                      "font_size": 1,
-                      "color_scheme": "blue"
-                    }</pre></code>
-                </td>
-              </tr>
-              <tr>
-                <td>97</td>
-                <td>Bored...</td>
-                <td>2020-08-15T12:34:56.123456</td>
-                <td>
-                  <pre style="width: 100%;"><code data-trim>
-                    {
-                      "dark_mode": false,
-                      "font_size": 3,
-                      "color_scheme": "red"
-                    }</pre></code>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-        <section data-auto-animate>
-          <h2>
-            Databases
-          </h2>
-
-          <table class="code" style="font-size: 1.2rem;">
-            <thead>
-              <tr>
-                <th colspan="4">myapp_profile</th>
-              </tr>
-              <tr>
-                <th>user_id</th>
-                <th>status</th>
-                <th>last_sync</th>
-                <th>config</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>32</td>
-                <td>Happy!</td>
-                <td>2020-08-17T 19:45:05.481516</td>
-                <td>{"dark_mode": true, "font_size": 1, "color_scheme": "blue"}</td>
-              </tr>
-              <tr>
-                <td>97</td>
-                <td>Bored...</td>
-                <td>2020-08-15T 12:34:56.123456</td>
-                <td>{"dark_mode": false, "font_size": 3, "color_scheme": "red"}</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      </section>
-      <section>
-        <section data-auto-animate>
-          <h2><code>JSONField</code></h2>
-        </section>
-        <section data-auto-animate>
-          <h2><code>JSONField</code></h2>
-          <p>How does it work?</p>
-        </section>
-        <section data-auto-animate>
-          <h2><code>JSONField</code></h2>
-          <p>How does it work?</p>
-
-          <pre data-id="code-model" style="font-size: 1.25rem;"><code data-line-numbers data-trim class="python">
-            class Profile(models.Model):
-                ...
-                config = models.JSONField()
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>JSONField</code></h2>
-          <p data-id="how">How does it work?</p>
-
-          <pre data-id="code-model" style="font-size: 1.25rem;"><code data-line-numbers data-trim class="python">
-            class Profile(models.Model):
-                ...
-                config = models.JSONField()
-          </code></pre>
-
-          <pre data-id="code-shell" style="font-size: 1.15rem;"><code data-line-numbers="1|2|3|4|5-6" data-trim class="python">
-            >>> config = {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> profile = Profile.objects.create(config=config)
-            >>> # Some time later...
-            >>> saved_profile = Profile.objects.get(id=profile.id)
-            >>> saved_profile.config == config
-            True
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>JSONField</code></h2>
-          <p data-id="how">How does it work<span data-id="background" style="font-size: 0;">... in the
-              background</span>?</p>
-
-          <pre data-id="code-shell" style="font-size: 1.15rem;"><code data-line-numbers="7-8|9|10|11-12" data-trim class="python">
-            >>> config = {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> profile = Profile.objects.create(config=config)
-            >>> # Some time later...
-            >>> saved_profile = Profile.objects.get(id=profile.id)
-            >>> saved_profile.config == config
-            True
-            >>> saved_profile.config
-            {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> saved_profile.config['font_size'] = 3
-            >>> saved_profile.save()
-            >>> Profile.objects.get(id=saved_profile.id).config['font_size']
-            3
-          </code></pre>
-        </section>
-      </section>
-      <section>
-        <section data-auto-animate>
-          <h2><code>JSONField</code></h2>
-          <p data-id="how">How does it work<span data-id="background" style="font-size: inherit;">... in the
-              background</span>?</p>
-
-          <pre data-id="code-shell" style="font-size: 1.15rem;"><code data-line-numbers="11-12" data-trim class="python">
-            >>> config = {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> profile = Profile.objects.create(config=config)
-            >>> # Some time later...
-            >>> saved_profile = Profile.objects.get(id=profile.id)
-            >>> saved_profile.config == config
-            True
-            >>> saved_profile.config
-            {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> saved_profile.config['font_size'] = 3
-            >>> saved_profile.save()
-            >>> Profile.objects.get(id=saved_profile.id).config['font_size']
-            3
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>JSONField</code></h2>
-          <p data-id="how">How does it work<span data-id="background" style="font-size: inherit;">... in the
-              background</span>?</p>
-
-          <pre data-id="code-shell" style="font-size: 1.15rem;"><code data-line-numbers="1|2" data-trim class="python">
-            >>> config = {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> profile = Profile.objects.create(config=config)
-            >>> # Some time later...
-            >>> saved_profile = Profile.objects.get(id=profile.id)
-            >>> saved_profile.config
-            {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>JSONField</code></h2>
-          <p data-id="how">How does it work<span data-id="background" style="font-size: inherit;">... in the
-              background</span>?</p>
-
-          <pre data-id="code-shell" style="font-size: 1.15rem;"><code data-line-numbers="2-3|2|3" data-trim class="python">
-            >>> config = {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> profile = Profile(config=config)
-            >>> profile.save()
-            >>> # Some time later...
-            >>> saved_profile = Profile.objects.get(id=profile.id)
-            >>> saved_profile.config
-            {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>JSONField</code></h2>
-          <p data-id="how">How does it work<span data-id="background" style="font-size: inherit;">... in the
-              background</span>?</p>
-
-          <pre data-id="code-shell" style="font-size: 1.15rem;"><code data-line-numbers="4-5" data-trim class="python">
-            >>> config = {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> profile = Profile(config=config)
-            >>> profile.save()
-            >>> # Turn the config into JSON-encoded data!
-            >>> '{"dark_mode": true, "font_size": 2, "color_scheme": "pink"}'
-            >>> saved_profile = Profile.objects.get(id=profile.id)
-            >>> saved_profile.config
-            {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>JSONField</code></h2>
-          <p data-id="how">How does it work<span data-id="background" style="font-size: inherit;">... in the
-              background</span>?</p>
-
-          <pre data-id="code-shell" style="font-size: 1.15rem;"><code data-line-numbers="6-10|11" data-trim class="python">
-            >>> config = {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> profile = Profile(config=config)
-            >>> profile.save()
-            >>> # Turn the config into JSON-encoded data!
-            >>> '{"dark_mode": true, "font_size": 2, "color_scheme": "pink"}'
-            >>> # Eventually, it will be:
-            >>> """
-            INSERT INTO myapp_profile
-            VALUES (42, '{"dark_mode": true, "font_size": 2, "color_scheme": "pink"}')
-            """
-            >>> saved_profile = Profile.objects.get(id=profile.id)
-            >>> saved_profile.config
-            {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>JSONField</code></h2>
-          <p data-id="how">How does it work<span data-id="background" style="font-size: inherit;">... in the
-              background</span>?</p>
-
-          <pre data-id="code-shell" style="font-size: 1.15rem;"><code data-line-numbers="12" data-trim class="python">
-            >>> config = {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> profile = Profile(config=config)
-            >>> profile.save()
-            >>> # Turn the config into JSON-encoded data!
-            >>> '{"dark_mode": true, "font_size": 2, "color_scheme": "pink"}'
-            >>> # Eventually, it will be:
-            >>> """
-            INSERT INTO myapp_profile
-            VALUES (42, '{"dark_mode": true, "font_size": 2, "color_scheme": "pink"}')
-            """
-            >>> saved_profile = Profile.objects.get(id=profile.id)
-            >>> """SELECT id, config FROM myapp_profile WHERE id = 42"""
-            >>> saved_profile.config
-            {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>JSONField</code></h2>
-          <p data-id="how">How does it work<span data-id="background" style="font-size: inherit;">... in the
-              background</span>?</p>
-
-          <pre data-id="code-shell" style="font-size: 1.15rem;"><code data-line-numbers="13|13-15" data-trim class="python">
-            >>> config = {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> profile = Profile(config=config)
-            >>> profile.save()
-            >>> # Turn the config into JSON-encoded data!
-            >>> '{"dark_mode": true, "font_size": 2, "color_scheme": "pink"}'
-            >>> # Eventually, it will be:
-            >>> """
-            INSERT INTO myapp_profile
-            VALUES (42, '{"dark_mode": true, "font_size": 2, "color_scheme": "pink"}')
-            """
-            >>> saved_profile = Profile.objects.get(id=profile.id)
-            >>> """SELECT id, config FROM myapp_profile WHERE id = 42"""
-            >>> '{"dark_mode": true, "font_size": 2, "color_scheme": "pink"}'
-            >>> saved_profile.config
-            {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-          </code></pre>
-        </section>
-      </section>
-      <section>
-        <section data-auto-animate>
-          <h2>Python's <code>json</code> library</h2>
-        </section>
-        <section data-auto-animate>
-          <h2>Python's <code>json</code> library</h2>
-
-          <pre data-id="code-shell" style="font-size: 1.15rem;"><code data-line-numbers="1|2|3|4-5|6|7-8|9-10" data-trim class="python">
-            >>> import json
-            >>> config = {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> encoded = json.dumps(config)
-            >>> encoded
-            '{"dark_mode": true, "font_size": 2, "color_scheme": "pink"}'
-            >>> decoded = json.loads(encoded)
-            >>> decoded
-            {'dark_mode': True, 'font_size': 2, 'color_scheme': 'pink'}
-            >>> decoded == config
-            True
-          </code></pre>
-        </section>
-      </section>
-      <section>
-        <section data-auto-animate>
-          <h2>Transforms and Lookups</h2>
-        </section>
-        <section data-auto-animate>
-          <h2>Transforms and Lookups</h2>
-
-          <pre><code data-trim class="json">
-            {
-              "name": "Sage",
-              "age": 22
-            }
-          </code></pre>
-
-          <pre><code data-trim class="fragment python">
-            >>> MyModel.objects.filter(some_json_field__name='Sage')
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2>Transforms and Lookups</h2>
-
-          <pre><code data-trim class="json">
-            {
-              "name": "Sage",
-              "age": 22
-            }
-          </code></pre>
-
-          <pre><code data-trim class="fragment json">
-            {
-              "name": "Sage",
-              "age": 22,
-              "partner": null
-            }
-          </code></pre>
-
-          <pre><code data-trim class="fragment python">
-            >>> MyModel.objects.filter(
-                    some_json_field__partner__isnull=True)
-          </code></pre>
-
-          <pre><code data-trim class="fragment python">
-            >>> MyModel.objects.filter(
-                    some_json_field__partner=None)
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2>Transforms and Lookups</h2>
-          <p>Containment</p>
-          <pre><code data-trim class="json">
-            {
-              "name": "Sage",
-              "age": 22,
-              "pets": [
-                {"name": "Bagol", "species": "cat"},
-                {"name": "Foxy", "species": "fox"}
-              ]
-            }
-          </code></pre>
-
-          <pre><code data-trim class="python">
-            >>> MyModel.objects.filter(
-                    some_json_field__contains={
-                        "age": 22,
-                        "pets": [{"species": "cat"}]
-                    }
-                )
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2>Transforms and Lookups</h2>
-          <p>Containment</p>
-          <pre><code data-trim class="json">
-            {
-              "name": "Sage",
-              "age": 22
-            }
-          </code></pre>
-
-          <pre><code data-trim class="python">
-            >>> MyModel.objects.filter(
-                    some_json_field__contained_by={
-                        "age": 22,
-                        "name": "Sage",
-                        "pets": [
-                          {"name": "Bagol", "species": "cat"},
-                          {"name": "Foxy", "species": "fox"}
-                        ]
-                    }
-                )
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2>Transforms and Lookups</h2>
-          <p>Key existence</p>
-
-          <pre><code data-trim class="python">
-            >>> MyModel.objects.filter(some_json_field__has_key='pets')
-          </code></pre>
-
-          <pre><code data-trim class="python">
-            >>> MyModel.objects.filter(
-                    some_json_field__has_keys=['pets', 'age'])
-          </code></pre>
-
-          <pre><code data-trim class="python">
-            >>> MyModel.objects.filter(
-                    some_json_field__has_any_keys=['pets', 'age'])
-          </code></pre>
-        </section>
-      </section>
-      <section>
-        <section data-auto-animate>
-          <h2>How does this fit into Wagtail?</h2>
-        </section>
-      </section>
-      <section>
-        <section data-auto-animate>
-          <h2>The easy wins</h2>
-        </section>
-        <section data-auto-animate>
-          <h2><code>PageRevision</code></h2>
-          <img src="assets/wagtail_PageRevision.png" alt="Wagtail's PageRevision model reference" />
-          <a style="font-size: 1rem;"
-            href="https://docs.wagtail.org/en/2.16.1/reference/pages/model_reference.html">docs.wagtail.org/en/2.16.1/reference/pages/model_reference.html</a>
-        </section>
-        <section data-auto-animate>
-          <h2><code>PageRevision</code></h2>
-          <pre data-id="page-revision-model"><code data-trim class="python" data-line-numbers="1-6|3">
-            class PageRevision(models.Model):
-                ...
-                content_json = models.TextField(
-                    verbose_name=_("content JSON")
-                )
-                ...
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>PageRevision</code></h2>
-          <pre data-id="page-revision-model"><code data-trim class="python" data-line-numbers="3">
-            class PageRevision(models.Model):
-                ...
-                content_json = models.JSONField(
-                    verbose_name=_("content JSON")
-                )
-                ...
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>PageRevision</code></h2>
-          <pre data-id="page-revision-model"><code data-trim class="python" data-line-numbers="3">
-            class PageRevision(models.Model):
-                ...
-                content = models.JSONField(
-                    verbose_name=_("content JSON")
-                )
-                ...
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>PageRevision</code></h2>
-          <pre data-id="page-revision-model"><code data-trim class="python" data-line-numbers="5|1-7">
-            class PageRevision(models.Model):
-                ...
-                content = models.JSONField(
-                    verbose_name=_("content JSON"),
-                    encoder=DjangoJSONEncoder
-                )
-                ...
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>PageRevision</code></h2>
-          <img style="margin-bottom: 0;" width="640" src="assets/wagtail_PageRevision_diff.png"
-            alt="PageRevision PR diff sample" />
-          <div style="line-height: 1rem;">
-            <a style="font-size: 1rem;" href="https://github.com/wagtail/wagtail/pull/8024">wagtail/wagtail#8024</a>
-          </div>
-        </section>
-        <section data-auto-animate>
-          <h2><code>BaseLogEntry</code></h2>
-          <img width="640" src="assets/wagtail_LogEntry.png"
-            alt="Wagtail's BaseLogEntry and PageLogEntry model reference" />
-          <a style="font-size: 1rem;"
-            href="https://docs.wagtail.org/en/2.16.1/reference/pages/model_reference.html">docs.wagtail.org/en/2.16.1/reference/pages/model_reference.html</a>
-        </section>
-        <section data-auto-animate>
-          <h2><code>BaseLogEntry</code></h2>
-          <pre data-id="base-log-entry-model"><code data-trim class="python" data-line-numbers="1-4|3">
-            class BaseLogEntry(models.Model):
-                ...
-                data_json = models.TextField(blank=True)
-                ...
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>BaseLogEntry</code></h2>
-          <pre data-id="base-log-entry-model"><code data-trim class="python" data-line-numbers="3">
-            class BaseLogEntry(models.Model):
-                ...
-                data = models.JSONField(blank=True)
-                ...
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>BaseLogEntry</code></h2>
-          <pre data-id="base-log-entry-model"><code data-trim class="python" data-line-numbers="3">
-            class BaseLogEntry(models.Model):
-                ...
-                data = models.JSONField(blank=True, default=dict)
-                ...
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2><code>BaseLogEntry</code></h2>
-          <img style="margin-bottom: 0;" width="500" src="assets/wagtail_LogEntry_diff.png"
-            alt="BaseLogEntry PR diff sample" />
-          <div style="line-height: 1rem;">
-            <a style="font-size: 1rem;" href="https://github.com/wagtail/wagtail/pull/8021">wagtail/wagtail#8021</a>
-          </div>
-        </section>
-        <section data-auto-animate>
-          <h2><code>BaseLogEntry</code></h2>
-          <img style="margin-bottom: 0;" width="640" src="assets/wagtail_LogEntry_issue.png"
-            alt="Issue #6942 on Wagtail, requesting BaseLogEntry to use JSONField" />
-          <div style="line-height: 1rem;">
-            <a style="font-size: 1rem;" href="https://github.com/wagtail/wagtail/issues/6942">wagtail/wagtail#6942</a>
-          </div>
-        </section>
-      </section>
-      <section data-auto-animate>
+  <body>
+    <div class="reveal">
+      <div class="slides">
         <section>
-          <h2>The not-so-easy wins</h2>
+          <h2>
+            Experimenting with<br />
+            <strong>File-based Routing</strong><br />
+            in Django
+          </h2>
+          <br />
+          <h3>Sage Abdullah</h3>
+          <h4>
+            <a href="https://wagtail.org">Wagtail</a> Developer
+            <a href="https://torchbox.com">@Torchbox</a>
+          </h4>
         </section>
-        <section data-auto-animate>
-          <h2><code>StreamField</code></h2>
-          <img style="margin-bottom: 0;" width="640" src="assets/wagtail_StreamField_issue.png"
-            alt="Issue #5280 on Wagtail, requesting StreamField to use JSONField" />
-          <div style="line-height: 1rem;">
-            <a style="font-size: 1rem;" href="https://github.com/wagtail/wagtail/issues/5280">wagtail/wagtail#5280</a>
-          </div>
-        </section>
-        <section data-auto-animate>
-          <h2><code>StreamField</code></h2>
-          <img style="margin-bottom: 0;" src="assets/wagtail_StreamField_issue_comment.png"
-            alt="Comment: &quot;I would like to pull this up, since Wagtail 2.16 has dropped Django 3.0 and 3.1 and can now offer JSONField for all supported DBs.&quot;" />
-          <div style="line-height: 1rem;">
-            <a style="font-size: 1rem;"
-              href="https://github.com/wagtail/wagtail/issues/5280#issuecomment-1035126512">wagtail/wagtail#5280
-              (comment)</a>
-          </div>
-        </section>
-        <section data-auto-animate>
-          <h2><code>StreamField</code></h2>
-          <pre data-id="streamfield"><code data-trim class="python" data-line-numbers="1-4">
-            class StreamField(models.Field):
-                ...
-                def get_internal_type(self):
-                    return "TextField"
-          </code></pre>
-          <img class="fragment" data-fragment-index="0" style="margin-bottom: 0;" src="assets/django_emulating_type.png"
-            alt="Django docs: get_internal_type() is useful if the field is similar to some other field." />
-          <div data-id="link" class="fragment" data-fragment-index="0" style="line-height: 1rem;">
-            <a style="font-size: 1rem;"
-              href="https://docs.djangoproject.com/en/stable/howto/custom-model-fields/#emulating-built-in-field-types-1">docs.djangoproject.com/en/stable/howto/custom-model-fields/#emulating-built-in-field-types-1</a>
-          </div>
-        </section>
-        <section data-auto-animate>
-          <h2><code>StreamField</code></h2>
-          <pre data-id="streamfield"><code data-trim class="python" data-line-numbers="1-4">
-            class StreamField(models.Field):
-                ...
-                def get_internal_type(self):
-                    return "JSONField"
-          </code></pre>
-          <img style="margin-bottom: 0;" src="assets/django_emulating_type.png"
-            alt="Django docs: get_internal_type() is useful if the field is similar to some other field." />
-          <div data-id="link" style="line-height: 1rem;">
-            <a style="font-size: 1rem;"
-              href="https://docs.djangoproject.com/en/stable/howto/custom-model-fields/#emulating-built-in-field-types-1">docs.djangoproject.com/en/stable/howto/custom-model-fields/#emulating-built-in-field-types-1</a>
-          </div>
-        </section>
-        <section data-auto-animate>
-          <h2><code>StreamField</code></h2>
-          <pre data-id="streamfield"><code data-trim class="python" data-line-numbers="1-4">
-            class StreamField(models.Field):
-                ...
-                def get_internal_type(self):
-                    return "JSONField"  # Doesn't work! 😢
-          </code></pre>
-          <img style="margin-bottom: 0;" src="assets/django_emulating_type.png"
-            alt="Django docs: get_internal_type() is useful if the field is similar to some other field." />
-          <div data-id="link" style="line-height: 1rem;">
-            <a style="font-size: 1rem;"
-              href="https://docs.djangoproject.com/en/stable/howto/custom-model-fields/#emulating-built-in-field-types-1">docs.djangoproject.com/en/stable/howto/custom-model-fields/#emulating-built-in-field-types-1</a>
-          </div>
-        </section>
-        <section data-auto-animate>
-          <h2>The problem</h2>
-        </section>
-        <section data-auto-animate>
-          <h2>The problem</h2>
-          <img width="500" style="margin-bottom: 0;" src="assets/django_change_base.png"
-            alt="Django docs: You can’t change the base class of a custom field because Django won’t detect the change and make a migration for it." />
-          <div data-id="link" style="line-height: 1rem;">
-            <a style="font-size: 1rem;"
-              href="https://docs.djangoproject.com/en/stable/howto/custom-model-fields/#changing-a-custom-field-s-base-class">docs.djangoproject.com/en/stable/howto/custom-model-fields/#changing-a-custom-field-s-base-class</a>
-          </div>
-        </section>
-        <section data-auto-animate>
-          <h2>The solution</h2>
-        </section>
-        <section data-auto-animate>
-          <h2>The solution</h2>
-          <p><span data-id="jsonstreamfield"><code>JSONStreamField</code>?</span> 🤔</p>
-        </section>
-        <section data-auto-animate>
-          <h2>The solution</h2>
-          <p><span data-id="jsonstreamfield"><code>JSONStreamField</code>?</span> ❎</p>
-          <p><code>use_json_field</code> ✅</p>
-        </section>
-        <section data-auto-animate>
-          <h2>The solution</h2>
-          <pre style="font-size: 1.25rem;" data-id="streamfield"><code data-trim class="python" data-line-numbers="1-11|2,4|7-11|10">
-            class StreamField(models.Field):
-                def __init__(self, block_types, use_json_field=None, **kwargs):
-                    ...
-                    self.use_json_field = use_json_field
-                    ...
-
-                def deconstruct(self):
-                    name, path, _, kwargs = super().deconstruct()
-                    ...
-                    kwargs["use_json_field"] = self.use_json_field
-                    return name, path, args, kwargs
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2>The solution</h2>
-          <pre style="font-size: 1.25rem;" data-id="streamfield"><code data-trim class="python" data-line-numbers="1-4|3-4">
-            class StreamField(models.Field):
-                ...
-                def get_internal_type(self):
-                    return "JSONField" if self.use_json_field else "TextField"
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2>The solution</h2>
-          <pre style="font-size: 1.25rem;" data-id="streamfield"><code data-trim class="python" data-line-numbers="1-11|3-6,8-11|4-5,9-10">
-            class StreamField(models.Field):
-                ...
-                def get_lookup(self, lookup_name):
-                    if self.use_json_field:
-                        return models.JSONField().get_lookup(lookup_name)
-                    return super().get_lookup(lookup_name)
-
-                def get_transform(self, lookup_name):
-                    if self.use_json_field:
-                        return models.JSONField().get_transform(lookup_name)
-                    return super().get_transform(lookup_name)
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2>The solution</h2>
-          <pre style="font-size: 1.25rem;" data-id="streamfield"><code data-trim class="python" data-line-numbers="3-5|3-5,9,14">
-            class StreamField(models.Field):
-                ...
-                @property
-                def json_field(self):
-                    return models.JSONField(encoder=DjangoJSONEncoder)
-
-                def get_lookup(self, lookup_name):
-                    if self.use_json_field:
-                        return self.json_field.get_lookup(lookup_name)
-                    return super().get_lookup(lookup_name)
-
-                def get_transform(self, lookup_name):
-                    if self.use_json_field:
-                        return self.json_field.get_transform(lookup_name)
-                    return super().get_transform(lookup_name)
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2>The solution</h2>
-          <pre style="font-size: 1.2rem;" data-id="streamfield"><code data-trim class="python" data-line-numbers="1-16|5,8-16">
-            class StreamField(models.Field):
-                def __init__(self, block_types, use_json_field=None, **kwargs):
-                    ...
-                    self.use_json_field = use_json_field
-                    self._check_json_field()
-                    ...
-
-                def _check_json_field(self):
-                    if type(self.use_json_field) is not bool:
-                        warnings.warn(
-                            "StreamField must explicitly set use_json_field "
-                            "argument to True/False instead of "
-                            f"{self.use_json_field}.",
-                            RemovedInWagtail219Warning,
-                            stacklevel=3,
-                        )
-          </code></pre>
-        </section>
-        <section data-auto-animate>
-          <h2>Where we're at</h2>
-          <img style="margin-bottom: 0;" width="640" src="assets/wagtail_StreamField_pr.png"
-            alt="StreamField PR description" />
-          <div data-id="link" style="line-height: 1rem;">
-            <a style="font-size: 1rem;" href="https://github.com/wagtail/wagtail/pull/8039">wagtail/wagtail#8039</a>
-          </div>
-        </section>
-        <section data-auto-animate>
-          <h2>Where we're at</h2>
-          <img style="margin-bottom: 0;" width="640" src="assets/wagtail_StreamField_tests.png"
-            alt="Tests are passing" />
-          <div data-id="link" style="line-height: 1rem;">
-            <a style="font-size: 1rem;" href="https://github.com/wagtail/wagtail/pull/8039">wagtail/wagtail#8039</a>
-          </div>
-        </section>
-      </section>
-      <section>
-        <section data-auto-animate>
-          <h2>What could this bring?</h2>
-        </section>
-        <section data-auto-animate>
-          <h2>What could this bring?</h2>
-          <ul class="compact">
-            <li>Improved read performance*</li>
-            <li class="fragment">Smarter search with lookups and transforms</li>
-            <li class="fragment">New features for <code>StreamField</code>s?</li>
-            <li class="fragment">You tell me 😉</li>
+        <section>
+          <ul>
+            <li>File-based routing? 🤔</li>
+            <li>How it works in other web frameworks 🧐</li>
+            <li>How it may be implemented in a Django project 🧪</li>
+            <li>Possible improvements and their challenges 🚧</li>
+            <li>How you can use it in your project ✅</li>
           </ul>
         </section>
-      </section>
-      <section>
         <section data-auto-animate>
-          <h1>Thank you!</h1>
+          <h2 style="font-size: 3em">2020</h2>
         </section>
         <section data-auto-animate>
-          <h1>Thank you!</h1>
-          <pre class="hljs" style="font-size: 1.25rem;">{
+          <h2 style="font-size: 3em">2021</h2>
+        </section>
+        <section data-auto-animate>
+          <img
+            src="assets/nextjs-logotype-dark-background.png"
+            alt="Next.js logo"
+            width="50%"
+          />
+        </section>
+        <section data-auto-animate>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 1em;
+              min-width: 0;
+            "
+          >
+            <img
+              src="assets/django-logo-negative.png"
+              alt="Django logo"
+              width="30%"
+            />
+            <div style="font-size: 4rem; line-height: normal">➡️</div>
+            <img
+              src="assets/nextjs-logotype-dark-background.png"
+              alt="Next.js logo"
+              width="30%"
+            />
+          </div>
+          <div class="fragment" data-fragment-index="1">
+            <code>urls.js</code>? 🤷
+          </div>
+        </section>
+        <section data-auto-animate>
+          <section data-auto-animate>
+            <h2>File-based routing</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>File-based routing</h2>
+            <p>Instead of defining routes <strong>in</strong> your code...</p>
+          </section>
+          <section data-auto-animate>
+            <h2>File-based routing</h2>
+            <p>Instead of defining routes <strong>in</strong> your code...</p>
+            <p>...routes are defined <strong>by</strong> your code.</p>
+          </section>
+          <section data-auto-animate>
+            <h2>File-based routing</h2>
+            <p>Instead of defining routes <strong>in</strong> your code...</p>
+            <p>
+              ...routes are defined <strong>by your code structure</strong>.
+            </p>
+          </section>
+        </section>
+        <section data-auto-animate>
+          <h2>How does it work?</h2>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>Next.js</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>Next.js</h2>
+            <div style="display: grid; justify-items: center">
+              <img
+                src="assets/nextjs-index.png"
+                alt="Myproject structure, with 'pages' directory containing 'index.js' and a subdirectory 'blog' containing 'index.js'"
+                width="30%"
+              />
+            </div>
+          </section>
+          <section data-auto-animate>
+            <h2>Next.js</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr">
+              <img
+                src="assets/nextjs-index.png"
+                alt="Myproject structure, with 'pages' directory containing 'index.js' and a subdirectory 'blog' containing 'index.js'"
+              />
+              <pre style="font-size: 1.3em"><code>
+
+
+
+/blog
+/
+            </code></pre>
+            </div>
+          </section>
+          <section data-auto-animate>
+            <h2>Next.js</h2>
+            <pre style="font-size: 1em"><code data-trim class="shell">
+              pages/index.jsx       →  /
+              pages/blog/index.jsx  →  /blog
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2>Next.js</h2>
+            <pre style="font-size: 1em"><code data-trim class="shell">
+              pages/index.jsx       →  /
+              pages/blog/index.jsx  →  /blog
+            </code></pre>
+            <p>How is this possible?</p>
+          </section>
+        </section>
+        <section data-auto-animate>
+          <section data-auto-animate>
+            <h2>JavaScript <code>export</code>s</h2>
+            <pre
+              data-id="homepage-function"
+            ><code data-line-numbers="1-5|3" data-trim class="typescript">
+              // pages/index.jsx
+
+              export function HomePage() {
+                  return <h1>Hello, world!</h1>;
+              }
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2>JavaScript <code>export</code>s</h2>
+            <pre
+              data-id="homepage-function"
+            ><code data-line-numbers="3|1-5" data-trim class="typescript">
+              // pages/index.jsx
+
+              export default function HomePage() {
+                  return <h1>Hello, world!</h1>;
+              }
+            </code></pre>
+          </section>
+        </section>
+        <section data-auto-animate>
+          <section data-auto-animate>
+            <img
+              src="assets/nextjs-logotype-dark-background.png"
+              alt="Next.js logo"
+              width="25%"
+            />
+            <pre><code data-trim class="shell">
+              pages/
+              ├── blog/
+              │   ├── index.jsx            →  /blog
+              │   └── first-post.jsx       →  /blog/first-post
+              ├── settings/
+              │   └── account/
+              │       └── password.jsx     →  /settings/account/password
+              └── index.jsx                →  /
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <img
+              src="assets/nextjs-logotype-dark-background.png"
+              alt="Next.js logo"
+              width="25%"
+            />
+            <pre><code data-trim class="shell">
+              pages/
+              ├── blog/
+              │   ├── index.jsx            →  /blog
+              │   └── [slug].jsx           →  /blog/:slug
+              ├── profile/
+              │   └── [username]/
+              │       ├── index.jsx        →  /profile/:username
+              │       └── likes.jsx        →  /profile/:username/likes
+              ├── settings/
+              │   └── account/
+              │       └── password.jsx     →  /settings/account/password
+              ├── unknown/
+              │   └── [...all].jsx         →  /unknown/*
+              └── index.jsx                →  /
+            </code></pre>
+          </section>
+        </section>
+        <section data-auto-animate>
+          <section data-auto-animate>
+            <img src="assets/remix.png" alt="Remix logo" width="25%" />
+            <pre><code data-trim class="shell">
+              root.jsx                     →  /
+              routes/
+              ├── blog/
+              │   ├── index.jsx            →  /blog
+              │   └── $slug.jsx            →  /blog/:slug
+              ├── profile/
+              │   ├── $username/
+              │   │   └── likes.jsx        →  /profile/:username/likes
+              │   └── $username.jsx        →  /profile/:username
+              ├── settings/
+              │   └── account/
+              │       └── password.jsx     →  /settings/account/password
+              └── unknown/
+                  └── $.jsx                →  /unknown/*
+            </code></pre>
+          </section>
+        </section>
+        <section data-auto-animate>
+          <section data-auto-animate>
+            <img src="assets/nuxtjs.png" alt="NuxtJS logo" width="25%" />
+            <pre><code data-trim class="shell">
+              pages/
+              ├── blog/
+              │   ├── index.vue            →  /blog
+              │   └── _slug.vue            →  /blog/:slug
+              ├── profile/
+              │   └── _username/
+              │       ├── index.vue        →  /profile/:username
+              │       └── likes.vue        →  /profile/:username/likes
+              ├── settings/
+              │   └── account/
+              │       └── password.vue     →  /settings/account/password
+              ├── unknown/
+              │   └── _.vue                →  /unknown/*
+              └── index.vue                →  /
+            </code></pre>
+          </section>
+        </section>
+        <section data-auto-animate>
+          <section data-auto-animate>
+            <img
+              src="assets/svelte-kit-horizontal.svg"
+              alt="SvelteKit logo"
+              width="50%"
+            />
+            <pre style="font-size: 1.05rem"><code data-trim class="shell">
+              routes/                      →  /
+              ├── blog/                    →  /blog
+              │   ├── +page.svelte
+              │   └── [slug]/              →  /blog/:slug
+              │       └── +page.svelte
+              ├── profile/
+              │   └── [username]/          →  /profile/:username
+              │       ├── +page.svelte
+              │       └── likes/           →  /profile/:username/likes
+              │           └── +page.svelte
+              ├── settings/
+              │   └── account/
+              │       └── password/         →  /settings/account/password
+              │           └── +page.svelte
+              ├── unknown/
+              │   └── [...rest]/            →  /unknown/*
+              │       ├── +error.svelte
+              │       └── +page.svelte
+              └── +page.svelte
+            </code></pre>
+          </section>
+        </section>
+        <section data-auto-animate>
+          <section data-auto-animate>
+            <img
+              src="assets/Gatsby_Logo_White.png"
+              alt="Gatsby logo"
+              width="50%"
+            />
+            <pre style="font-size: 1.05rem"><code data-trim class="shell">
+              pages/
+              ├── blog/
+              │   └── {MarkdownRemark.parent__(File)__name}.js  →  /blog/:filename
+              ├── products/
+              │   └── {Product.category}/
+              │       └── {Product.fields__sku}.js              →  /products/:category/:sku
+              ├── profile/
+              │   ├── [id]/
+              │   │   └── group/
+              │   │       └── [groupId].js                      →  /profile/:id/group/:groupId
+              │   └── [id].js                                   →  /profile/:id
+              └── unknown/
+                  └── [...rest].js                              →  /unknown/*
+            </code></pre>
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>Why is it so popular?</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>Why is it so popular?</h2>
+            <p>code structure ↔️ url structure</p>
+          </section>
+          <section data-auto-animate>
+            <h2>Why is it so popular?</h2>
+            <pre data-id="homepage-function"><code data-trim class="typescript">
+              import BlogPost from 'pages/blog/[slug]';
+            </code></pre>
+          </section>
+        </section>
+        <section>
+          <h2>How can we have this in Django?</h2>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>File structure</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>File structure</h2>
+            <div style="display: grid; justify-items: center">
+              <pre style="width: 50%"><code data-trim class="shell">
+                pages/
+                ├── about.jsx
+                ├── index.jsx
+                ├── posts/
+                │   ├── [slug].jsx
+                │   └── index.jsx
+                └── projects/
+                    ├── [id].jsx
+                    └── index.jsx
+              </code></pre>
+            </div>
+          </section>
+          <section data-auto-animate>
+            <h2>File structure</h2>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                justify-items: center;
+              "
+            >
+              <pre><code data-trim class="shell">
+                pages/
+                ├── about.jsx
+                ├── index.jsx
+                ├── posts/
+                │   ├── [slug].jsx
+                │   └── index.jsx
+                └── projects/
+                    ├── [id].jsx
+                    └── index.jsx
+              </code></pre>
+              <pre><code data-trim class="shell">
+                myapp/views/
+                ├── about.py
+                ├── index.py
+                ├── posts/
+                │   ├── [slug].py
+                │   └── index.py
+                └── projects/
+                    ├── [id].py
+                    └── index.py
+              </code></pre>
+            </div>
+          </section>
+          <section data-auto-animate>
+            <h2>File structure</h2>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                justify-items: center;
+              "
+            >
+              <pre><code data-trim class="shell">
+                pages/
+                ├── about.jsx
+                ├── index.jsx
+                ├── posts/
+                │   ├── [slug].jsx
+                │   └── index.jsx
+                └── projects/
+                    ├── [id].jsx
+                    └── index.jsx
+              </code></pre>
+              <pre><code data-trim class="shell">
+                myapp/views/
+                ├── about.py
+                ├── __init__.py
+                ├── posts/
+                │   ├── [slug].py
+                │   └── __init__.py
+                └── projects/
+                    ├── [id].py
+                    └── __init__.py
+              </code></pre>
+            </div>
+          </section>
+          <section data-auto-animate>
+            <h2>File structure</h2>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                justify-items: center;
+              "
+            >
+              <pre><code data-trim class="shell">
+                pages/
+                ├── about.jsx
+                ├── index.jsx
+                ├── posts/
+                │   ├── [slug].jsx
+                │   └── index.jsx
+                └── projects/
+                    ├── [id].jsx
+                    └── index.jsx
+              </code></pre>
+              <pre><code data-trim class="shell">
+                myapp/views/
+                ├── about.py
+                ├── __init__.py
+                ├── posts/
+                │   ├── &lt;slug:slug&gt;.py
+                │   └── __init__.py
+                └── projects/
+                    ├── &lt;int:id&gt;.py
+                    └── __init__.py
+              </code></pre>
+            </div>
+          </section>
+          <section data-auto-animate>
+            <h2>File structure</h2>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                justify-items: center;
+              "
+            >
+              <pre><code data-trim class="shell">
+                pages/
+                ├── about.jsx
+                ├── index.jsx
+                ├── posts/
+                │   ├── [slug].jsx
+                │   └── index.jsx
+                └── projects/
+                    ├── [id].jsx
+                    └── index.jsx
+              </code></pre>
+              <pre><code data-trim class="shell">
+                myapp/views/
+                ├── about.py
+                ├── __init__.py
+                ├── posts/
+                │   ├── __slug__slug__.py
+                │   └── __init__.py
+                └── projects/
+                    ├── __int__id__.py
+                    └── __init__.py
+              </code></pre>
+            </div>
+          </section>
+          <section data-auto-animate>
+            <h2>File structure</h2>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                justify-items: center;
+              "
+            >
+              <pre><code data-trim class="shell">
+                pages/
+                ├── about.jsx
+                ├── index.jsx
+                ├── posts/
+                │   ├── [slug].jsx
+                │   └── index.jsx
+                └── projects/
+                    ├── [id].jsx
+                    └── index.jsx
+              </code></pre>
+              <pre><code data-trim class="shell">
+                myapp/views/
+                ├── about.py
+                ├── __init__.py
+                ├── posts/
+                │   ├── slug.py
+                │   └── __init__.py
+                └── projects/
+                    ├── id.py
+                    └── __init__.py
+              </code></pre>
+            </div>
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>Views</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>Views</h2>
+            <div style="display: grid; justify-items: center">
+              <pre><code data-trim class="typescript">
+                export default function HomePage() {
+                    return <h1>Hello, world!</h1>;
+                }
+              </code></pre>
+            </div>
+          </section>
+          <section data-auto-animate>
+            <h2>Views</h2>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                justify-items: center;
+              "
+            >
+              <pre style="font-size: 1rem"><code data-trim class="typescript">
+              export default function HomePage() {
+                  return <h1>Hello, world!</h1>;
+              }
+            </code></pre>
+              <pre style="font-size: 1rem"><code data-trim class="python">
+                def default(request):
+                    return HttpResponse("Hello, world!")
+              </code></pre>
+            </div>
+          </section>
+          <section data-auto-animate>
+            <h2>Views</h2>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                justify-items: center;
+              "
+            >
+              <pre style="font-size: 1rem"><code data-trim class="typescript">
+              export default function HomePage() {
+                  return <h1>Hello, world!</h1>;
+              }
+            </code></pre>
+              <pre style="font-size: 1rem"><code data-trim class="python">
+                def view(request):
+                    return HttpResponse("Hello, world!")
+              </code></pre>
+            </div>
+          </section>
+          <section data-auto-animate>
+            <h2>Views</h2>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                justify-items: center;
+              "
+            >
+              <pre style="font-size: 1rem"><code data-trim class="typescript">
+              export default function HomePage() {
+                  return <h1>Hello, world!</h1>;
+              }
+              </code></pre>
+              <pre style="font-size: 1rem"><code data-trim class="python">
+                def dispatch(request):
+                    return HttpResponse("Hello, world!")
+              </code></pre>
+            </div>
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h1>Thank you!</h1>
+          </section>
+          <section data-auto-animate>
+            <h1>Thank you!</h1>
+            <pre class="hljs" style="font-size: 1.25rem">{
   "name": "Sage Abdullah",
   "username": "laymonage",
   "slides": {
@@ -887,28 +613,29 @@
     "<a href="https://github.com/wagtail/wagtail/pull/8039">https://github.com/wagtail/wagtail/pull/8039</a>"
   ]
 }</pre>
+          </section>
+          <section
+            data-auto-animate
+            data-background-image="assets/cats.jpg"
+          ></section>
         </section>
-        <section data-auto-animate data-background-image="assets/cats.jpg">
-        </section>
-      </section>
+      </div>
     </div>
-  </div>
 
-  <script src="dist/reveal.js"></script>
-  <script src="plugin/notes/notes.js"></script>
-  <script src="plugin/markdown/markdown.js"></script>
-  <script src="plugin/highlight/highlight.js"></script>
-  <script>
-    // More info about initialization & config:
-    // - https://revealjs.com/initialization/
-    // - https://revealjs.com/config/
-    Reveal.initialize({
-      hash: true,
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
 
-      // Learn about plugins: https://revealjs.com/plugins/
-      plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
-    });
-  </script>
-</body>
-
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
 </html>
