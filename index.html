@@ -596,6 +596,226 @@
         </section>
         <section>
           <section data-auto-animate>
+            <h2>Hooking it into <code>urls.py</code></h2>
+          </section>
+          <section data-auto-animate>
+            <h2>Hooking it into <code>urls.py</code></h2>
+            <pre><code data-line-numbers="1-4|2-3" data-trim class="python">
+              urlpatterns = [
+                  fs_paths("myapp.views"),
+                  # or fs_paths("myapp/views") ?
+                  # or *fs_paths("myapp/views") ?
+              ]
+            </code></pre>
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2><code>fs_paths</code></h2>
+          </section>
+          <section data-auto-animate>
+            <h2><code>fs_paths</code></h2>
+            <pre><code data-trim class="python">
+              def fs_paths(module_path):
+                  ...
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2><code>fs_paths</code></h2>
+            <pre
+              style="font-size: 1.25rem"
+            ><code data-line-numbers="1-5|2|3|4|5" data-trim class="python">
+              def fs_paths(module_path):
+                  # 1. Get the module object from module_path (dynamic import)
+                  # 2. Use getattr(module, "dispatch") to get the view function
+                  # 3. Construct path(route, view)
+                  # 4. Repeat for all submodules
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2><code>fs_paths</code></h2>
+            <pre
+              style="font-size: 1.25rem"
+            ><code data-line-numbers="1,4" data-trim class="python">
+              from importlib import import_module
+
+              def fs_paths(module_path):
+                  module = import_module(module_path)
+                  # 2. Use getattr(module, "dispatch") to get the view function
+                  # 3. Construct path(route, view)
+                  # 4. Repeat for all submodules
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2><code>fs_paths</code></h2>
+            <pre
+              style="font-size: 1.25rem"
+            ><code data-line-numbers="5" data-trim class="python">
+              from importlib import import_module
+
+              def fs_paths(module_path):
+                  module = import_module(module_path)
+                  view = getattr(module, "dispatch")
+                  # 3. Construct path(route, view)
+                  # 4. Repeat for all submodules
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2><code>fs_paths</code></h2>
+            <pre
+              style="font-size: 1.25rem"
+            ><code data-line-numbers="2,7" data-trim class="python">
+              from importlib import import_module
+              from django.urls import path
+
+              def fs_paths(module_path):
+                  module = import_module(module_path)
+                  view = getattr(module, "dispatch")
+                  return path("", view, name="index")
+                  # 4. Repeat for all submodules
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2><code>fs_paths</code></h2>
+            <pre
+              style="font-size: 1rem"
+            ><code data-line-numbers="5|8-9|11" data-trim class="python">
+              from importlib import import_module
+              from django.urls import path
+
+              def fs_paths(module_path):
+                  result = []
+                  module = import_module(module_path)
+                  view = getattr(module, "dispatch", None)
+                  if callable(view):
+                      result.append(path("", view, name="index"))
+
+                  return path("", include((result, module_path)))
+
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2><code>fs_paths</code></h2>
+            <pre
+              style="font-size: 1rem"
+            ><code data-line-numbers="4,11-13" data-trim class="python">
+              from importlib import import_module
+              from django.urls import path
+
+              def fs_paths(module_path, namespace=None):
+                  result = []
+                  module = import_module(module_path)
+                  view = getattr(module, "dispatch", None)
+                  if callable(view):
+                      result.append(path("", view, name="index"))
+
+                  if not namespace:
+                      namespace = module_path
+                  return path("", include((result, namespace)))
+
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2><code>fs_paths</code></h2>
+            <pre
+              style="font-size: 0.75rem"
+            ><code data-line-numbers="15-23|15-16|17|18|19-23|25" data-trim class="python">
+              from pkgutil import walk_packages
+              from importlib import import_module
+              from django.urls import path
+
+              def fs_paths(module_path, namespace=None):
+                  result = []
+                  module = import_module(module_path)
+                  view = getattr(module, "dispatch", None)
+                  if callable(view):
+                      result.append(path("", view, name="index"))
+
+                  if not namespace:
+                      namespace = module_path
+
+                  prefix = f"{module_path}.")
+                  for pkg in walk_packages(module.__path__, prefix=prefix):
+                      finder, name, _ = pkg  # pkgutil.ModuleInfo
+                      module = finder.find_module(name).load_module(name)
+                      view = getattr(module, "dispatch", None)
+                      route_name = name[len(prefix):]
+                      route = route_name.replace('.', '/')
+                      if callable(view):
+                          result.append(path(route, view, name=route_name))
+
+                  result.sort(key=lambda x: str(x.pattern), reverse=True)
+
+                  return path("", include((result, namespace)))
+
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2><code>urls.py</code></h2>
+            <pre><code data-trim class="python">
+              urlpatterns = [
+                  fs_paths("myapp.views", "myapp"),
+              ]
+            </code></pre>
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>What about path parameters?</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>What about path parameters?</h2>
+            <p>It "just works ™️"</p>
+          </section>
+          <section data-auto-animate>
+            <h2>What about path parameters?</h2>
+            <pre><code data-trim class="python">
+              # myapp/views/posts/slug.py
+              path = "posts/&lt;slug:slug&gt;"
+
+              def dispatch(request, slug):
+                  ...
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2>What about path parameters?</h2>
+            <pre><code data-trim class="python">
+              # myapp/views/projects/id.py
+              path = "projects/&lt;int:id&gt;"
+
+              def dispatch(request, id):
+                  ...
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2>What about path parameters?</h2>
+            <pre><code data-trim class="python">
+              route = name[len(prefix):].replace('.', '/')
+              if callable(view):
+                  result.append(path(route, view))
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2>What about path parameters?</h2>
+            <pre style="font-size: 1.25rem"><code data-trim class="python">
+              route = getattr(module, "path", route_name.replace('.', '/'))
+              if callable(view):
+                  result.append(path(route, view, name=route_name))
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2>What about path parameters?</h2>
+            <pre><code data-trim class="python">
+              # myapp/views/projects/id.py
+              path = "&lt;int:id&gt;"
+
+              def dispatch(request, id):
+                  ...
+            </code></pre>
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
             <h1>Thank you!</h1>
           </section>
           <section data-auto-animate>
