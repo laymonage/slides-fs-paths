@@ -29,9 +29,10 @@
           <br />
           <h3>Sage Abdullah</h3>
           <h4>
-            <a href="https://wagtail.org">Wagtail</a> Developer
-            <a href="https://torchbox.com">@Torchbox</a>
+            <a href="https://wagtail.org">Wagtail</a> Developer at
+            <a href="https://torchbox.com">Torchbox</a>
           </h4>
+          <h5><a href="https://github.com/laymonage">@laymonage</a></h5>
         </section>
         <section>
           <ul>
@@ -42,10 +43,10 @@
             <li>How you can use it in your project ✅</li>
           </ul>
         </section>
-        <section data-auto-animate>
+        <section>
           <h2 style="font-size: 3em">2020</h2>
         </section>
-        <section data-auto-animate>
+        <section>
           <h2 style="font-size: 3em">2021</h2>
         </section>
         <section data-auto-animate>
@@ -107,10 +108,18 @@
         </section>
         <section>
           <section data-auto-animate>
-            <h2>Next.js</h2>
+            <img
+              src="assets/nextjs-logotype-dark-background.png"
+              alt="Next.js logo"
+              width="30%"
+            />
           </section>
           <section data-auto-animate>
-            <h2>Next.js</h2>
+            <img
+              src="assets/nextjs-logotype-dark-background.png"
+              alt="Next.js logo"
+              width="30%"
+            />
             <div style="display: grid; justify-items: center">
               <img
                 src="assets/nextjs-index.png"
@@ -120,7 +129,11 @@
             </div>
           </section>
           <section data-auto-animate>
-            <h2>Next.js</h2>
+            <img
+              src="assets/nextjs-logotype-dark-background.png"
+              alt="Next.js logo"
+              width="30%"
+            />
             <div style="display: grid; grid-template-columns: 1fr 1fr">
               <img
                 src="assets/nextjs-index.png"
@@ -136,14 +149,22 @@
             </div>
           </section>
           <section data-auto-animate>
-            <h2>Next.js</h2>
+            <img
+              src="assets/nextjs-logotype-dark-background.png"
+              alt="Next.js logo"
+              width="30%"
+            />
             <pre style="font-size: 1em"><code data-trim class="shell">
               pages/index.jsx       →  /
               pages/blog/index.jsx  →  /blog
             </code></pre>
           </section>
           <section data-auto-animate>
-            <h2>Next.js</h2>
+            <img
+              src="assets/nextjs-logotype-dark-background.png"
+              alt="Next.js logo"
+              width="30%"
+            />
             <pre style="font-size: 1em"><code data-trim class="shell">
               pages/index.jsx       →  /
               pages/blog/index.jsx  →  /blog
@@ -600,7 +621,7 @@
           </section>
           <section data-auto-animate>
             <h2>Hooking it into <code>urls.py</code></h2>
-            <pre><code data-line-numbers="1-4|2-3" data-trim class="python">
+            <pre><code data-line-numbers="1-5|2-4" data-trim class="python">
               urlpatterns = [
                   fs_paths("myapp.views"),
                   # or fs_paths("myapp/views") ?
@@ -624,7 +645,7 @@
             <h2><code>fs_paths</code></h2>
             <pre
               style="font-size: 1.25rem"
-            ><code data-line-numbers="1-5|2|3|4|5" data-trim class="python">
+            ><code data-line-numbers="1-5|2|3|4|5|2" data-trim class="python">
               def fs_paths(module_path):
                   # 1. Get the module object from module_path (dynamic import)
                   # 2. Use getattr(module, "dispatch") to get the view function
@@ -636,7 +657,7 @@
             <h2><code>fs_paths</code></h2>
             <pre
               style="font-size: 1.25rem"
-            ><code data-line-numbers="1,4" data-trim class="python">
+            ><code data-line-numbers="1,4|5" data-trim class="python">
               from importlib import import_module
 
               def fs_paths(module_path):
@@ -650,7 +671,7 @@
             <h2><code>fs_paths</code></h2>
             <pre
               style="font-size: 1.25rem"
-            ><code data-line-numbers="5" data-trim class="python">
+            ><code data-line-numbers="5|6" data-trim class="python">
               from importlib import import_module
 
               def fs_paths(module_path):
@@ -664,7 +685,7 @@
             <h2><code>fs_paths</code></h2>
             <pre
               style="font-size: 1.25rem"
-            ><code data-line-numbers="2,7" data-trim class="python">
+            ><code data-line-numbers="2,7|8" data-trim class="python">
               from importlib import import_module
               from django.urls import path
 
@@ -679,7 +700,7 @@
             <h2><code>fs_paths</code></h2>
             <pre
               style="font-size: 1rem"
-            ><code data-line-numbers="5|8-9|11" data-trim class="python">
+            ><code data-line-numbers="5|7-9|11" data-trim class="python">
               from importlib import import_module
               from django.urls import path
 
@@ -719,7 +740,7 @@
             <h2><code>fs_paths</code></h2>
             <pre
               style="font-size: 0.75rem"
-            ><code data-line-numbers="15-23|15-16|17|18|19-23|25" data-trim class="python">
+            ><code data-line-numbers="15-23|15-16|17|18|19-23|25|27" data-trim class="python">
               from pkgutil import walk_packages
               from importlib import import_module
               from django.urls import path
@@ -790,7 +811,7 @@
           <section data-auto-animate>
             <h2>What about path parameters?</h2>
             <pre><code data-trim class="python">
-              route = name[len(prefix):].replace('.', '/')
+              route = route_name.replace('.', '/')
               if callable(view):
                   result.append(path(route, view))
             </code></pre>
@@ -816,6 +837,75 @@
         </section>
         <section>
           <section data-auto-animate>
+            <h2>Why <code>dispatch</code>?</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>Why <code>dispatch</code>?</h2>
+            <pre><code data-trim class="python">
+              def dispatch(request, *args, **kwargs):
+                  ...
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2>Why <code>dispatch</code>?</h2>
+            <pre><code data-trim class="python">
+              def get(request, *args, **kwargs):
+                  ...
+
+              def post(request, *args, **kwargs):
+                  ...
+
+              ...
+            </code></pre>
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>Regex paths?</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>Regex paths?</h2>
+            <pre><code data-trim class="python">
+              re_path = r"(?P&lt;year&gt;[0-9]{4})"
+
+              def dispatch(request, *args, **kwargs):
+                  ...
+            </code></pre>
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>How can you use this?</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>How can you use this?</h2>
+            <img
+              src="assets/django-fs-paths.png"
+              alt="laymonage/django-fs-paths repository on GitHub"
+              width="80%"
+            />
+            <p>
+              <a href="https://github.com/laymonage/django-fs-paths">
+                github.com/laymonage/django-fs-paths
+              </a>
+            </p>
+          </section>
+          <section data-auto-animate>
+            <h2>How can you use this?</h2>
+            <img
+              src="assets/django-file-router.png"
+              alt="jerivas/django-file-router repository on GitHub"
+              width="50%"
+            />
+            <p>
+              <a href="https://github.com/jerivas/django-file-router">
+                github.com/jerivas/django-file-router
+              </a>
+            </p>
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
             <h1>Thank you!</h1>
           </section>
           <section data-auto-animate>
@@ -824,20 +914,13 @@
   "name": "Sage Abdullah",
   "username": "laymonage",
   "slides": {
-    "hosted": "<a href="https://slides.laymonage.com/wagtail-jsonfield">https://slides.laymonage.com/wagtail-jsonfield</a>",
-    "source": "<a href="https://github.com/laymonage/slides-wagtail-jsonfield">https://github.com/laymonage/slides-wagtail-jsonfield</a>"
+    "hosted": "<a href="https://slides.laymonage.com/fs-paths">https://slides.laymonage.com/fs-paths</a>",
+    "source": "<a href="https://github.com/laymonage/slides-fs-paths">https://github.com/laymonage/slides-fs-paths</a>"
   },
-  "prs": [
-    "<a href="https://github.com/wagtail/wagtail/pull/8021">https://github.com/wagtail/wagtail/pull/8021</a>",
-    "<a href="https://github.com/wagtail/wagtail/pull/8024">https://github.com/wagtail/wagtail/pull/8024</a>",
-    "<a href="https://github.com/wagtail/wagtail/pull/8039">https://github.com/wagtail/wagtail/pull/8039</a>"
-  ]
+  "project": "<a href="https://github.com/laymonage/django-fs-paths">https://github.com/laymonage/django-fs-paths</a>",
+  "alternative": "<a href="https://github.com/jerivas/django-file-router">https://github.com/jerivas/django-file-router</a>"
 }</pre>
           </section>
-          <section
-            data-auto-animate
-            data-background-image="assets/cats.jpg"
-          ></section>
         </section>
       </div>
     </div>
