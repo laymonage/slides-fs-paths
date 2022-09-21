@@ -445,7 +445,9 @@
                     ├── [id].jsx
                     └── index.jsx
               </code></pre>
-              <pre><code data-trim class="shell">
+              <pre
+                data-id="python-file-structure"
+              ><code data-trim class="shell">
                 myapp/views/
                 ├── about.py
                 ├── __init__.py
@@ -478,7 +480,9 @@
                     ├── [id].jsx
                     └── index.jsx
               </code></pre>
-              <pre><code data-trim class="shell">
+              <pre
+                data-id="python-file-structure"
+              ><code data-trim class="shell">
                 myapp/views/
                 ├── about.py
                 ├── __init__.py
@@ -511,7 +515,9 @@
                     ├── [id].jsx
                     └── index.jsx
               </code></pre>
-              <pre><code data-trim class="shell">
+              <pre
+                data-id="python-file-structure"
+              ><code data-trim class="shell">
                 myapp/views/
                 ├── about.py
                 ├── __init__.py
@@ -544,7 +550,9 @@
                     ├── [id].jsx
                     └── index.jsx
               </code></pre>
-              <pre><code data-trim class="shell">
+              <pre
+                data-id="python-file-structure"
+              ><code data-trim class="shell">
                 myapp/views/
                 ├── about.py
                 ├── __init__.py
@@ -586,7 +594,10 @@
                   return <h1>Hello, world!</h1>;
               }
             </code></pre>
-              <pre style="font-size: 1rem"><code data-trim class="python">
+              <pre
+                data-id="django-view-func"
+                style="font-size: 1rem"
+              ><code data-trim class="python">
                 def default(request):
                     return HttpResponse("Hello, world!")
               </code></pre>
@@ -606,7 +617,10 @@
                   return <h1>Hello, world!</h1>;
               }
             </code></pre>
-              <pre style="font-size: 1rem"><code data-trim class="python">
+              <pre
+                data-id="django-view-func"
+                style="font-size: 1rem"
+              ><code data-trim class="python">
                 def view(request):
                     return HttpResponse("Hello, world!")
               </code></pre>
@@ -626,7 +640,10 @@
                   return <h1>Hello, world!</h1>;
               }
               </code></pre>
-              <pre style="font-size: 1rem"><code data-trim class="python">
+              <pre
+                data-id="django-view-func"
+                style="font-size: 1rem"
+              ><code data-trim class="python">
                 def dispatch(request):
                     return HttpResponse("Hello, world!")
               </code></pre>
@@ -654,7 +671,7 @@
           </section>
           <section data-auto-animate>
             <h2><code>fs_paths</code></h2>
-            <pre><code data-trim class="python">
+            <pre data-id="fs_paths-function"><code data-trim class="python">
               def fs_paths(module_path):
                   ...
             </code></pre>
@@ -662,8 +679,42 @@
           <section data-auto-animate>
             <h2><code>fs_paths</code></h2>
             <pre
+              data-id="fs_paths-function"
               style="font-size: 1.25rem"
-            ><code data-line-numbers="1-5|2|3|4|5|2" data-trim class="python">
+            ><code data-line-numbers="2" data-trim class="python">
+              def fs_paths(module_path):
+                  # 1. Get the module object from module_path (dynamic import)
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2><code>fs_paths</code></h2>
+            <pre
+              data-id="fs_paths-function"
+              style="font-size: 1.25rem"
+            ><code data-line-numbers="3" data-trim class="python">
+              def fs_paths(module_path):
+                  # 1. Get the module object from module_path (dynamic import)
+                  # 2. Use getattr(module, "dispatch") to get the view function
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2><code>fs_paths</code></h2>
+            <pre
+              data-id="fs_paths-function"
+              style="font-size: 1.25rem"
+            ><code data-line-numbers="4" data-trim class="python">
+              def fs_paths(module_path):
+                  # 1. Get the module object from module_path (dynamic import)
+                  # 2. Use getattr(module, "dispatch") to get the view function
+                  # 3. Construct path(route, view)
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2><code>fs_paths</code></h2>
+            <pre
+              data-id="fs_paths-function"
+              style="font-size: 1.25rem"
+            ><code data-line-numbers="5|2" data-trim class="python">
               def fs_paths(module_path):
                   # 1. Get the module object from module_path (dynamic import)
                   # 2. Use getattr(module, "dispatch") to get the view function
@@ -674,6 +725,7 @@
           <section data-auto-animate>
             <h2><code>fs_paths</code></h2>
             <pre
+              data-id="fs_paths-function"
               style="font-size: 1.25rem"
             ><code data-line-numbers="1,4|5" data-trim class="python">
               from importlib import import_module
@@ -688,6 +740,7 @@
           <section data-auto-animate>
             <h2><code>fs_paths</code></h2>
             <pre
+              data-id="fs_paths-function"
               style="font-size: 1.25rem"
             ><code data-line-numbers="5|6" data-trim class="python">
               from importlib import import_module
@@ -702,6 +755,7 @@
           <section data-auto-animate>
             <h2><code>fs_paths</code></h2>
             <pre
+              data-id="fs_paths-function"
               style="font-size: 1.25rem"
             ><code data-line-numbers="2,7|8" data-trim class="python">
               from importlib import import_module
@@ -717,6 +771,7 @@
           <section data-auto-animate>
             <h2><code>fs_paths</code></h2>
             <pre
+              data-id="fs_paths-function"
               style="font-size: 1rem"
             ><code data-line-numbers="5|7-9|11" data-trim class="python">
               from importlib import import_module
@@ -736,6 +791,7 @@
           <section data-auto-animate>
             <h2><code>fs_paths</code></h2>
             <pre
+              data-id="fs_paths-function"
               style="font-size: 1rem"
             ><code data-line-numbers="4,11-13" data-trim class="python">
               from importlib import import_module
@@ -757,6 +813,7 @@
           <section data-auto-animate>
             <h2><code>fs_paths</code></h2>
             <pre
+              data-id="fs_paths-function"
               style="font-size: 0.75rem"
             ><code data-line-numbers="15-23|15-16|17|18|19-23|25|27" data-trim class="python">
               from pkgutil import walk_packages
