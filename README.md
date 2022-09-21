@@ -1,12 +1,12 @@
-# Bringing `JSONField` into Wagtail Core
+# Experimenting with File-based Routing in Django
 
-Talk given at [Wagtail Space US 2022][ws2022] (2022-03-25).
+Talk given at [DjangoCon Europe 2022][djceu2022] (2022-09-21).
 Made with [reveal.js][reveal.js].
 
-View on [slides.laymonage.com/wagtail-jsonfield][slides-wagtail-jsonfield] or serve locally
+View on [slides.laymonage.com/fs-paths][slides-fs-paths] or serve locally
 by running `npm start`. Serving without live reload can also be done by using
 `python -m http.server` or any other HTTP server.
 
-[ws2022]: https://us.wagtail.space
+[djceu2022]: https://2022.djangocon.eu
 [reveal.js]: https://github.com/hakimel/reveal.js
-[slides-wagtail-jsonfield]: https://slides.laymonage.com/wagtail-jsonfield
+[slides-fs-paths]: https://slides.laymonage.com/fs-paths
